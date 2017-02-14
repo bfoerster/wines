@@ -21,4 +21,4 @@ const wineSchema = new Schema({
     description: String
 });
 
-mongoose.model('Wine', wineSchema);
+module.exports = mongoose.model('Wine', wineSchema);

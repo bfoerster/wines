@@ -1,4 +1,10 @@
+
 const restify = require('restify');
+const mongoose = require('mongoose');
+
+mongoose.Promise = global.Promise;
+const dbUri = 'mongodb://localhost:27017/wines';
+mongoose.connect(dbUri);
 
 const server = restify.createServer();
 
