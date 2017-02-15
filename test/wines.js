@@ -94,7 +94,6 @@ describe('Testing Wines API', () => {
             });
     });
 
-
     it('GET all wines with non available', (done) => {
         chai.request(app)
             .get('/wines')
@@ -104,5 +103,38 @@ describe('Testing Wines API', () => {
                 response.body.length.should.be.eql(0);
                 done();
             });
+    });
+
+    it('GET all wines with wines available', (done) => {
+
+        const first = new Wine({
+            name: 'Pinot noir',
+            year: 2011,
+            country: 'France',
+            type: 'red',
+            description: 'Sensual and understated'
+        });
+
+        const second = new Wine({
+            name: 'Zinfandel',
+            year: 1990,
+            country: 'Croatia',
+            type: 'red',
+            description: 'Thick and jammy'
+        });
+
+        first.save().then(() => {
+            second.save().then(() => {
+                chai.request(app)
+                    .get('/wines')
+                    .end((error, response) => {
+                        response.should.have.status(200);
+                        response.body.should.be.a('array');
+                        response.body.length.should.be.eql(2);
+                        done();
+                    });
+            });
+        });
+
     });
 });

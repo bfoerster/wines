@@ -14,7 +14,9 @@ module.exports = (server) => {
     });
 
     server.get('/wines', (request, response, next) => {
-        response.send(200, []);
-        return next();
+        Wine.find().then((result) => {
+            response.send(200, result);
+            return next();
+        });
     });
 };
