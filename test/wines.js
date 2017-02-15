@@ -9,11 +9,9 @@ chai.should();
 chai.use(chaiHttp);
 
 describe('Testing Wines API', () => {
-    describe('Removing all wine objects from database', () => {
-        beforeEach((done) => {
-            Wine.remove({}, () => {
-                done();
-            });
+    beforeEach((done) => {
+        Wine.remove({}, () => {
+            done();
         });
     });
 
@@ -48,6 +46,54 @@ describe('Testing Wines API', () => {
                 });
             });
     });
+
+    it('Test POST wine with missing fields', (done) => {
+        const wine = new Wine({});
+
+        chai.request(app)
+            .post('/wines')
+            .send(wine)
+            .end((error, response) => {
+
+                response.should.have.status(400);
+                response.body.error.should.be.eql('VALIDATION_ERROR');
+                response.body.validation.name.should.be.eql('MISSING');
+                response.body.validation.year.should.be.eql('MISSING');
+                response.body.validation.country.should.be.eql('MISSING');
+                response.body.validation.type.should.be.eql('MISSING');
+
+                Wine.find().then((result) => {
+                    result.length.should.be.eql(0);
+                    done();
+                });
+            });
+    });
+
+    it('Test POST wine with invalid type', (done) => {
+        const wine = new Wine({
+            name: 'Cabernet sauvignon',
+            year: 2013,
+            country: 'France',
+            type: 'invalid',
+            description: 'The Sean Connery of red wines'
+        });
+
+        chai.request(app)
+            .post('/wines')
+            .send(wine)
+            .end((error, response) => {
+
+                response.should.have.status(400);
+                response.body.error.should.be.eql('VALIDATION_ERROR');
+                response.body.validation.type.should.be.eql('INVALID');
+
+                Wine.find().then((result) => {
+                    result.length.should.be.eql(0);
+                    done();
+                });
+            });
+    });
+
 
     it('GET all wines with non available', (done) => {
         chai.request(app)

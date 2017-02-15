@@ -1,4 +1,3 @@
-
 const Wine = require('../models/wine');
 
 module.exports = (server) => {
@@ -10,7 +9,6 @@ module.exports = (server) => {
             response.send(201, saved);
             return next();
         }).catch((error) => {
-            response.send(400, error);
             return next(error);
         });
     });

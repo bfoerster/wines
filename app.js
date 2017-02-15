@@ -1,7 +1,7 @@
-
 const restify = require('restify');
 const mongoose = require('mongoose');
 const log = require('npmlog');
+const errorhandler = require('./errors/error_handler');
 
 mongoose.Promise = global.Promise;
 const dbUri = process.env.DB_URI || 'mongodb://localhost:27017/wines';
@@ -18,9 +18,12 @@ server
     .use(restify.fullResponse())
     .use(restify.bodyParser());
 
+server.on('Validation', errorhandler);
+
 require('./routes/wines.js')(server);
 
 const port = process.env.PORT || 8080;
 server.listen(port);
+
 
 module.exports = server;
