@@ -4,7 +4,12 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 const dbUri = process.env.DB_URI || 'mongodb://localhost:27017/wines';
-mongoose.connect(dbUri);
+
+mongoose.connect(dbUri).then(() => {
+    console.log('Connection to database successful');
+}).catch((error) => {
+    console.log(error);
+});
 
 const server = restify.createServer();
 
