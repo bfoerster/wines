@@ -9,6 +9,9 @@ module.exports = (server) => {
         wine.save().then((saved) => {
             response.send(201, saved);
             return next();
+        }).catch((error) => {
+            response.send(400, error);
+            return next(error);
         });
     });
 
