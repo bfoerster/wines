@@ -40,6 +40,21 @@ module.exports = (server) => {
         });
     });
 
+    server.get('/wines/:id', (request, response, next) => {
+
+        const id = sanitize(request.params.id);
+
+        Wine.findById(id).then((result) => {
+
+            if(result){
+                response.send(200, result);
+            } else {
+                sendUnknonwObject(response);
+            }
+            return next();
+        });
+    });
+
     server.put('/wines/:id', (request, response, next) => {
 
         const id = sanitize(request.params.id);

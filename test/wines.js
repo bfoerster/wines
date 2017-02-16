@@ -356,4 +356,40 @@ describe('Testing Wines API', () => {
                 done();
             });
     });
+
+    it('GET all wines and search by name', (done) => {
+
+        const wine = new Wine({
+            name: 'Pinot noir',
+            year: 2011,
+            country: 'France',
+            type: 'red',
+            description: 'Sensual and understated'
+        });
+
+        wine.save().then((saved) => {
+            chai.request(app)
+                .get('/wines/' + saved._id)
+                .end((error, response) => {
+                    response.should.have.status(200);
+                    response.body.name.should.be.eql(wine.name);
+                    response.body.year.should.be.eql(wine.year);
+                    response.body.country.should.be.eql(wine.country);
+                    response.body.type.should.be.eql(wine.type);
+                    response.body.description.should.be.eql(wine.description);
+                    done();
+                });
+        });
+    });
+
+    it('GET all wines and search by name', (done) => {
+
+        chai.request(app)
+            .get('/wines/58a5fbdabea9e2076eef8c54')
+            .end((error, response) => {
+                response.should.have.status(400);
+                response.body.error.should.be.eql('UNKNOWN_OBJECT');
+                done();
+            });
+    });
 });
