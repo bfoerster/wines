@@ -135,6 +135,141 @@ describe('Testing Wines API', () => {
                     });
             });
         });
+    });
 
+    it('GET all wines and search by year', (done) => {
+
+        const first = new Wine({
+            name: 'Pinot noir',
+            year: 2011,
+            country: 'France',
+            type: 'red',
+            description: 'Sensual and understated'
+        });
+
+        const second = new Wine({
+            name: 'Zinfandel',
+            year: 1990,
+            country: 'Croatia',
+            type: 'red',
+            description: 'Thick and jammy'
+        });
+
+        first.save().then(() => {
+            second.save().then(() => {
+                chai.request(app)
+                    .get('/wines?year=1990')
+                    .end((error, response) => {
+                        response.should.have.status(200);
+                        response.body.should.be.a('array');
+                        response.body.length.should.be.eql(1);
+                        response.body[0].name.should.be.eql(second.name);
+                        response.body[0].year.should.be.eql(second.year);
+                        done();
+                    });
+            });
+        });
+    });
+
+    it('GET all wines and search by name', (done) => {
+
+        const first = new Wine({
+            name: 'Pinot noir',
+            year: 2011,
+            country: 'France',
+            type: 'red',
+            description: 'Sensual and understated'
+        });
+
+        const second = new Wine({
+            name: 'Zinfandel',
+            year: 1990,
+            country: 'Croatia',
+            type: 'red',
+            description: 'Thick and jammy'
+        });
+
+        first.save().then(() => {
+            second.save().then(() => {
+                chai.request(app)
+                    .get('/wines?name=' + second.name)
+                    .end((error, response) => {
+                        response.should.have.status(200);
+                        response.body.should.be.a('array');
+                        response.body.length.should.be.eql(1);
+                        response.body[0].name.should.be.eql(second.name);
+                        response.body[0].year.should.be.eql(second.year);
+                        done();
+                    });
+            });
+        });
+    });
+
+    it('GET all wines and search by type', (done) => {
+
+        const first = new Wine({
+            name: 'Pinot noir',
+            year: 2011,
+            country: 'France',
+            type: 'red',
+            description: 'Sensual and understated'
+        });
+
+        const second = new Wine({
+            name: 'Zinfandel',
+            year: 1990,
+            country: 'Croatia',
+            type: 'white',
+            description: 'Thick and jammy'
+        });
+
+        first.save().then(() => {
+            second.save().then(() => {
+                chai.request(app)
+                    .get('/wines?type=' + second.type)
+                    .end((error, response) => {
+                        response.should.have.status(200);
+                        response.body.should.be.a('array');
+                        response.body.length.should.be.eql(1);
+                        response.body[0].name.should.be.eql(second.name);
+                        response.body[0].type.should.be.eql(second.type);
+                        done();
+                    });
+            });
+        });
+    });
+
+    it('GET all wines and search by country', (done) => {
+
+        const first = new Wine({
+            name: 'Pinot noir',
+            year: 2011,
+            country: 'France',
+            type: 'red',
+            description: 'Sensual and understated'
+        });
+
+        const second = new Wine({
+            name: 'Zinfandel',
+            year: 1990,
+            country: 'Croatia',
+            type: 'white',
+            description: 'Thick and jammy'
+        });
+
+        first.save().then(() => {
+            second.save().then(() => {
+                chai.request(app)
+                    .get('/wines?country=' + second.country)
+                    .end((error, response) => {
+                        response.should.have.status(200);
+                        response.body.should.be.a('array');
+                        response.body.length.should.be.eql(1);
+                        response.body[0].name.should.be.eql(second.name);
+                        response.body[0].country.should.be.eql(second.country);
+                        done();
+                    });
+            });
+        });
     });
 });

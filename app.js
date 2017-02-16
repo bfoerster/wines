@@ -15,6 +15,7 @@ mongoose.connect(dbUri).then(() => {
 const server = restify.createServer();
 
 server
+    .use(restify.queryParser())
     .use(restify.fullResponse())
     .use(restify.bodyParser());
 

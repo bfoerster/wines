@@ -12,6 +12,7 @@
     "url": "git+https://github.com/hubuu/wines.git"
   },
   "dependencies": {
+    "mongo-sanitize": "^1.0.0",
     "mongoose": "^4.8.2",
     "npmlog": "^4.0.2",
     "restify": "^4.3.0"
