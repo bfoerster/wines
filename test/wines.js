@@ -272,4 +272,52 @@ describe('Testing Wines API', () => {
             });
         });
     });
+
+    it('PUT update wine object', (done) => {
+
+        const wine = new Wine({
+            name: 'Pinot noir',
+            year: 2011,
+            country: 'France',
+            type: 'red',
+            description: 'Sensual and understated'
+        });
+
+        const changedName = 'Another name';
+
+        wine.save().then((saved) => {
+            chai.request(app)
+                .put('/wines/' + saved._id)
+                .send({name: changedName})
+                .end((error, response) => {
+                    response.should.have.status(200);
+                    response.body.name.should.be.eql(changedName);
+
+                    Wine.findOne({'_id': wine._id}).then((result) => {
+                        result.name.should.be.eql(changedName);
+                        result.year.should.be.eql(wine.year);
+                        result.country.should.be.eql(wine.country);
+                        result.type.should.be.eql(wine.type);
+                        result.description.should.be.eql(wine.description);
+                        done();
+                    });
+                });
+        });
+    });
+
+    it('PUT update wine object with unknown id', (done) => {
+
+        chai.request(app)
+            .put('/wines/58a5fbdabea9e2076eef8c54')
+            .send({name: 'Another name'})
+            .end((error, response) => {
+                response.should.have.status(400);
+                response.body.error.should.be.eql('UNKNOWN_OBJECT');
+
+                Wine.find().then((result) => {
+                    result.length.should.be.eql(0);
+                    done();
+                });
+            });
+    });
 });

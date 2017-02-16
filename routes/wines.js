@@ -35,4 +35,22 @@ module.exports = (server) => {
             return next();
         });
     });
+
+    server.put('/wines/:id', (request, response, next) => {
+
+        const id = sanitize(request.params.id);
+
+        Wine.findOneAndUpdate({_id: id}, request.body, {new: true}).then((saved) => {
+
+            if(saved){
+                response.send(200, saved);
+            } else {
+                response.send(400, {error: 'UNKNOWN_OBJECT'});
+            }
+
+            next();
+        }).catch((error) => {
+            return next(error);
+        });
+    });
 };
