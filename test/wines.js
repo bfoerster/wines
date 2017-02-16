@@ -320,4 +320,40 @@ describe('Testing Wines API', () => {
                 });
             });
     });
+
+    it('DELETE wine object', (done) => {
+
+        const wine = new Wine({
+            name: 'Pinot noir',
+            year: 2011,
+            country: 'France',
+            type: 'red',
+            description: 'Sensual and understated'
+        });
+
+        wine.save().then((saved) => {
+            chai.request(app)
+                .delete('/wines/' + saved._id)
+                .end((error, response) => {
+                    response.should.have.status(200);
+                    response.body.success.should.be.true;
+
+                    Wine.find().then((result) => {
+                        result.length.should.be.eql(0);
+                        done();
+                    });
+                });
+        });
+    });
+
+    it('DELETE wine object with unknown id', (done) => {
+
+        chai.request(app)
+            .delete('/wines/58a5fbdabea9e2076eef8c54')
+            .end((error, response) => {
+                response.should.have.status(400);
+                response.body.error.should.be.eql('UNKNOWN_OBJECT');
+                done();
+            });
+    });
 });

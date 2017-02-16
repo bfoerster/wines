@@ -1,6 +1,10 @@
 const Wine = require('../models/wine');
 const sanitize = require('mongo-sanitize');
 
+function sendUnknonwObject(response) {
+    response.send(400, {error: 'UNKNOWN_OBJECT'});
+}
+
 module.exports = (server) => {
 
     server.post('/wines', (request, response, next) => {
@@ -42,12 +46,28 @@ module.exports = (server) => {
 
         Wine.findOneAndUpdate({_id: id}, request.body, {new: true}).then((saved) => {
 
-            if(saved){
+            if (saved) {
                 response.send(200, saved);
             } else {
-                response.send(400, {error: 'UNKNOWN_OBJECT'});
+                sendUnknonwObject(response);
             }
 
+            next();
+        }).catch((error) => {
+            return next(error);
+        });
+    });
+
+    server.del('/wines/:id', (request, response, next) => {
+
+        const id = sanitize(request.params.id);
+
+        Wine.findByIdAndRemove({_id: id}).then((result) => {
+            if(result){
+                response.send(200, {success: true});
+            } else {
+                sendUnknonwObject(response);
+            }
             next();
         }).catch((error) => {
             return next(error);
