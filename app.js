@@ -19,6 +19,11 @@ server
     .use(restify.fullResponse())
     .use(restify.bodyParser());
 
+server.use((request, response, next) => {
+    response.charSet('utf-8');
+    return next();
+});
+
 server.on('Validation', errorhandler);
 
 require('./routes/wines.js')(server);
